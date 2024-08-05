@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Product.Core.Entities;
 using Product.Core.Interface;
@@ -11,9 +12,11 @@ namespace Product.API.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CategoryController(IUnitOfWork iOW) 
+        private readonly IMapper _mapper;
+        public CategoryController(IUnitOfWork iOW, IMapper mapper) 
         {
             _unitOfWork = iOW;
+            _mapper = mapper;
         }
 
         [HttpGet("get-all-category")]
@@ -21,7 +24,8 @@ namespace Product.API.Controllers
         {
             var allCategory = await _unitOfWork.CategoryRepository.GetAllAsync();
             if (allCategory != null) {
-                return Ok(allCategory);
+                var res = _mapper.Map<IReadOnlyList<Category>, IReadOnlyList<ListCategoryDTO>>(allCategory);
+                return Ok(res);
             }
             return BadRequest();
         }
@@ -32,7 +36,7 @@ namespace Product.API.Controllers
             var categoryById = await _unitOfWork.CategoryRepository.GetAsync(id);
             if (categoryById != null)
             {
-                return Ok(categoryById);
+                return Ok(_mapper.Map<Category, ListCategoryDTO>(categoryById));
             }
             return BadRequest();
         }
@@ -44,13 +48,9 @@ namespace Product.API.Controllers
             {
                 if(ModelState.IsValid)
                 {
-                    var newCategory = new Category
-                    {
-                        Name = categoryDTO.Name,
-                        Description = categoryDTO.Description,
-                    };
-                    await _unitOfWork.CategoryRepository.AddAsync(newCategory);
-                    return Ok(newCategory);
+                    var res = _mapper.Map<Category>(categoryDTO);
+                    await _unitOfWork.CategoryRepository.AddAsync(res);
+                    return Ok(res);
                 }
                 return BadRequest();
             }catch (Exception ex)
@@ -69,8 +69,8 @@ namespace Product.API.Controllers
                     var existingCategory = await _unitOfWork.CategoryRepository.GetAsync(id);
                     if (existingCategory != null)
                     {
-                        existingCategory.Name = categoryDTO.Name;
-                        existingCategory.Description = categoryDTO.Description; 
+                        _mapper.Map(categoryDTO, existingCategory);
+
                     }
                     await _unitOfWork.CategoryRepository.UpdateAsync(id, existingCategory);
                     return Ok(existingCategory);
@@ -94,7 +94,10 @@ namespace Product.API.Controllers
                     await _unitOfWork.CategoryRepository.DeleteAsync(id);
                     return Ok($"This Category [{exiting_category.Name}] Is deleted ");
                 }
-                return BadRequest($"This Category [{exiting_category.Id}] Not Found");
+                else
+                {
+                  return BadRequest($"This Category [{exiting_category.Id}] Not Found");
+                }
             }
             catch (Exception ex)
             {

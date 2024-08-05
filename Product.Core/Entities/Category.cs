@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Product.Core.Entities
 {
-    public class Category
+    public class Category : BasicEntity<Category>
     {
-        public int Id { get; set; }
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
 

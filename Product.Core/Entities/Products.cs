@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Product.Core.Entities
 {
-    public class Products
+    public class Products : BasicEntity <Products>
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
