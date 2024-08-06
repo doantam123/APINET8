@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Product.Core.Entities;
 using Product.Core.Interface;
@@ -13,17 +12,18 @@ namespace Product.API.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public CategoryController(IUnitOfWork iOW, IMapper mapper) 
+        public CategoryController(IUnitOfWork iOW, IMapper mapper)
         {
             _unitOfWork = iOW;
             _mapper = mapper;
         }
 
         [HttpGet("get-all-category")]
-        public async Task<ActionResult> Get() 
+        public async Task<ActionResult> Get()
         {
             var allCategory = await _unitOfWork.CategoryRepository.GetAllAsync();
-            if (allCategory != null) {
+            if (allCategory != null)
+            {
                 var res = _mapper.Map<IReadOnlyList<Category>, IReadOnlyList<ListCategoryDTO>>(allCategory);
                 return Ok(res);
             }
@@ -46,14 +46,15 @@ namespace Product.API.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
                     var res = _mapper.Map<Category>(categoryDTO);
                     await _unitOfWork.CategoryRepository.AddAsync(res);
                     return Ok(res);
                 }
                 return BadRequest();
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -96,7 +97,7 @@ namespace Product.API.Controllers
                 }
                 else
                 {
-                  return BadRequest($"This Category [{exiting_category.Id}] Not Found");
+                    return BadRequest($"This Category [{exiting_category.Id}] Not Found");
                 }
             }
             catch (Exception ex)

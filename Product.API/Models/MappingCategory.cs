@@ -6,9 +6,10 @@ namespace Product.API.Models
 {
     public class MappingCategory : Profile
     {
-        public MappingCategory() { 
-            CreateMap<CategoryDTO,Category>().ReverseMap();
+        public MappingCategory()
+        {
+            CreateMap<CategoryDTO, Category>().ReverseMap();
             CreateMap<ListCategoryDTO, Category>().ReverseMap();
-        }   
+        }
     }
 }

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Product.Core.Entities;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Product.Core.Interface
 {
-    public interface IGenergicRepository <T> where T : class
+    public interface IGenergicRepository<T> where T : BasicEntity<int>
     {
         Task<IReadOnlyList<T>> GetAllAsync();
 
