@@ -13,12 +13,11 @@ namespace Product.Infrastructure.Repository
         {
             this._context = context;
         }
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(T Entity)
         {
-            await _context.Set<T>().AddAsync(entity);
+            await _context.Set<T>().AddAsync(Entity);
             await _context.SaveChangesAsync();
         }
-
         public async Task DeleteAsync(int id)
         {
             var entity = await _context.Set<T>().FindAsync(id);

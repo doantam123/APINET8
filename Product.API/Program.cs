@@ -14,8 +14,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.InfrastructureConfiguration(builder.Configuration);
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Path.Combine(
-    Directory.GetCurrentDirectory(),"wwwroot")));
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(
+    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
+
 
 var app = builder.Build();
 

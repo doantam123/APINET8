@@ -33,7 +33,6 @@ namespace Product.Infrastructure.Data
         public IFormFile Image { get; set; }
     }
 
-    //Update Product
     public class UpdateProductDto : BaseProduct
     {
 

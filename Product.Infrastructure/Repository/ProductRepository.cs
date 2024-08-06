@@ -22,22 +22,19 @@ namespace Product.Infrastructure.Repository
         {
             if (dto.Image is not null)
             {
-                var root = "/images/product/";
-                var prodcutname = $"{Guid.NewGuid()}" + dto.Image.FileName;
+                var root = Path.Combine("wwwroot", "images", "product");
+                var productName = $"{Guid.NewGuid()}_{dto.Image.FileName}";
                 if (!Directory.Exists(root))
                 {
                     Directory.CreateDirectory(root);
                 }
-                var src = root + prodcutname;
-                var pic_info = _fileProvider.GetFileInfo(src);
-                var root_path = pic_info.PhysicalPath;
-                using (var file_streem = new FileStream(root_path, FileMode.Create))
+                var src = Path.Combine(root, productName);
+                using (var fileStream = new FileStream(src, FileMode.Create))
                 {
-                    await dto.Image.CopyToAsync(file_streem);
-
+                    await dto.Image.CopyToAsync(fileStream);
                 }
                 var res = _mapper.Map<Products>(dto);
-                res.ProductPicture = src;
+                res.ProductPicture = src.Replace("wwwroot", string.Empty).Replace("\\", "/"); 
                 await _context.Products.AddAsync(res);
                 await _context.SaveChangesAsync();
                 return true;

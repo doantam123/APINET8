@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Product.Core.Entities;
 using Product.Core.Interface;
 using Product.Infrastructure.Data;
 
@@ -36,23 +37,25 @@ namespace Product.API.Controllers
         }
 
         [HttpPost("add-new-product")]
-        public async Task<ActionResult> Post([FromForm] CreateProductDto productDto)
+        public async Task<ActionResult> Post(CreateProductDto productDto)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-
-                    //var res = await _uow.ProductRepository.AddAsync(productDto);
-                    //return res ? Ok(productDto) : BadRequest(res);
+                    var res = await _uow.ProductRepository.AddAsync(productDto);
+                    return Ok(productDto);
                 }
-                return BadRequest(productDto);
+                else
+                {
+                    return BadRequest(ModelState);
+                }
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }
