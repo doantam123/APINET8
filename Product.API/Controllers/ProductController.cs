@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Product.API.Errors;
 using Product.Core.Entities;
 using Product.Core.Interface;
 using Product.Infrastructure.Data;
@@ -26,14 +27,17 @@ namespace Product.API.Controllers
         }
 
         [HttpGet("get-product-by-id/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseCommonResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult> get(int id)
         {
 
-            var res = await _uow.ProductRepository.GetByidAsync(id, x => x.Category);
-            if (res is null)
-                return NotFound();
-            var result = _mapper.Map<ProductDto>(res);
+            var src = await _uow.ProductRepository.GetByidAsync(id, x => x.Category);
+            if (src is null)
+                return NotFound(new BaseCommonResponse(404));
+            var result = _mapper.Map<ProductDto>(src);
             return Ok(result);
+
         }
 
         [HttpPost("add-new-product")]
