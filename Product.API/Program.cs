@@ -2,6 +2,7 @@ using Microsoft.Extensions.FileProviders;
 using Product.API.Extensions;
 using Product.API.Middleware;
 using Product.Infrastructure;
+using StackExchange.Redis;
 using System.Reflection;
 
 
@@ -18,7 +19,11 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.InfrastructureConfiguration(builder.Configuration);
-
+builder.Services.AddSingleton<IConnectionMultiplexer>(i =>
+{
+    var configure = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
+    return ConnectionMultiplexer.Connect(configure);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
