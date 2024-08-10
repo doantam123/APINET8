@@ -60,7 +60,7 @@ namespace Product.API.Controllers
             }
         }
 
-        [HttpPut("update-existing-categoru-by-id/{id}")]
+        [HttpPut("update-existing-category-by-id/{id}")]
         public async Task<ActionResult> Put(int id, CategoryDTO categoryDTO)
         {
             try

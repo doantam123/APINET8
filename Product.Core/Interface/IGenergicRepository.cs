@@ -16,7 +16,8 @@ namespace Product.Core.Interface
         Task<T> GetAsync(int id);
         Task AddAsync(T Entity);
         Task DeleteAsync(int id);
-
         Task UpdateAsync(int id, T Entity);
+        Task<int> CountAsync();
+
     }
 }

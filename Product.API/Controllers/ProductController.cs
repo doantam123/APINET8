@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Product.API.Errors;
+using Product.API.MyHelper;
 using Product.Core.Entities;
 using Product.Core.Interface;
+using Product.Core.Sharing;
 using Product.Infrastructure.Data;
 
 namespace Product.API.Controllers
@@ -20,10 +22,13 @@ namespace Product.API.Controllers
         }
 
         [HttpGet("get-all-products")]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> Get([FromQuery] ProductParams productParams)
         {
-            var res = await _uow.ProductRepository.GetAllAsync();
-            return Ok(res);
+            var res = await _uow.ProductRepository.GetAllAsync(productParams);
+            var totalitems = await _uow.ProductRepository.CountAsync();
+            var result = _mapper.Map<List<ProductDto>>(res);
+
+            return Ok(new Pagination<ProductDto>(productParams.Pagesize, productParams.PageNumber,totalitems, result));
         }
 
         [HttpGet("get-product-by-id/{id}")]
@@ -39,6 +44,7 @@ namespace Product.API.Controllers
             return Ok(result);
 
         }
+
 
         [HttpPost("add-new-product")]
         public async Task<ActionResult> Post(CreateProductDto productDto)
